@@ -1,17 +1,21 @@
-import { db } from "../database/db";
+import { z } from "zod";
+import { registrarLogService, listarLogsService } from "../services/logService";
 
-export function registrarLog(acao: string, tabela: string, usuario_id: number) {
-    const query = `INSERT INTO logs (acao, tabela, usuario_id, data) VALUES (?, ?, ?, datetime('now'))`;
-    db.run(query, [acao, tabela, usuario_id], function (erro) {
-        if (erro) console.error(`Erro ao registrar log: ${erro}`);
-        else console.log(`Log registrado para ação "${acao}" na tabela "${tabela}"`);
-    });
+const logSchema = z.object({
+    acao: z.string().min(1, "A ação é obrigatória"),
+    tabela: z.string().min(1, "A tabela é obrigatória"),
+    usuario_id: z.number().int().positive("O ID do usuário deve ser um número positivo"),
+});
+
+export function registrarLogController(logData: unknown) {
+    try {
+        const { acao, tabela, usuario_id } = logSchema.parse(logData);
+        registrarLogService(acao, tabela, usuario_id);
+    } catch (error: any) {
+        console.error("Validação do log falhou:", error.errors || error);
+    }
 }
 
-export function listarLogs() {
-    const query = `SELECT * FROM logs`;
-    db.all(query, (erro, linhas) => {
-        if (erro) console.error(`Erro ao listar logs: ${erro}`);
-        else console.log(linhas);
-    });
+export function listarLogsController() {
+    listarLogsService();
 }

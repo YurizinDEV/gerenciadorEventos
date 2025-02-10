@@ -1,36 +1,43 @@
+import { z } from "zod";
+import { inserirUsuarioService, listarTodosUsuariosService, listarUsuarioPorIdService, deletarUsuarioService } from "../services/userService";
+import { Usuario } from "../models/userModel";
 
-import { db } from "../database/db";
-import { Usuario } from "../models/usuarioModel";
+// Esquema de validação para usuário
+const usuarioSchema = z.object({
+    nome: z.string().min(1, "O nome é obrigatório"),
+    email: z.string().email("Email inválido"),
+    senha: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
+});
 
-export function inserirUsuario(nome: string, email: string, senha: string) {
-    const query = `INSERT INTO usuarios (nome, email, senha) VALUES (?,?,?) `;
-    db.run(query, [nome, email, senha], function (erro) {
-        if (erro) console.error(`Erro ao inserir usuário: ${erro}`);
-        else console.log(`Usuário ${this.lastID} cadastrado com sucesso!`);
-    });
+const idSchema = z.number().int().positive("O ID deve ser um número positivo");
+
+export function inserirUsuarioController(usuarioData: unknown) {
+    try {
+        const usuario: Usuario = usuarioSchema.parse(usuarioData);
+        inserirUsuarioService(usuario.nome, usuario.senha, usuario.email);
+    } catch (error: any) {
+        console.error("Validação de usuário falhou:", error.errors || error);
+    }
 }
 
-export function listarTodosOsUsuarios() {
-    const query = `SELECT * FROM usuarios`;
-    db.all(query, (erro, linhas: Usuario[]) => {
-        if (erro) console.error(`Erro ao listar usuários: ${erro}`);
-        else console.log(linhas);
-    });
+export function listarTodosUsuariosController() {
+    listarTodosUsuariosService();
 }
 
-export function listarUsuarioPorId(id: number) {
-    const query = `SELECT * FROM usuarios WHERE id = ?`;
-    db.get(query, [id], (erro, linha: Usuario) => {
-        if (erro) console.error(`Erro ao buscar o usuário: ${erro}`);
-        else if (linha) console.log(linha);
-        else console.log(`Nenhum usuário encontrado com o id ${id}`);
-    });
+export function listarUsuarioPorIdController(idData: unknown) {
+    try {
+        const id = idSchema.parse(idData);
+        listarUsuarioPorIdService(id);
+    } catch (error: any) {
+        console.error("Validação do ID falhou:", error.errors || error);
+    }
 }
 
-export function deletarUsuario(id: number) {
-    const query = `DELETE FROM usuarios WHERE id = ?`;
-    db.run(query, [id], function (erro) {
-        if (erro) console.error(`Erro ao deletar usuário: ${erro}`);
-        else console.log(`Usuário com id ${id} deletado com sucesso!`);
-    });
+export function deletarUsuarioController(idData: unknown) {
+    try {
+        const id = idSchema.parse(idData);
+        deletarUsuarioService(id);
+    } catch (error: any) {
+        console.error("Validação do ID falhou:", error.errors || error);
+    }
 }
