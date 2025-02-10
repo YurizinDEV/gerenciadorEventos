@@ -2,7 +2,7 @@
 
 export interface Evento {
     id: string;
-    nome : string;
+    nome: string;
     data: Date;
     criadoPor: string;
 }
