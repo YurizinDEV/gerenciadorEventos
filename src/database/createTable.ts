@@ -2,7 +2,7 @@ import { db } from "../database/db";
 
 // Cria tabela de usuários
 export function criarTabelaUsuarios() {
-    const query = `CREATE TABLE IF NOT EXISTS usuarios ( id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, email TEXT, senha TEXT" )`;
+    const query = `CREATE TABLE IF NOT EXISTS usuarios ( id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, email TEXT, senha TEXT )`;
     db.run(query, (erro) => {
         if (erro) console.error("Erro ao criar tabela usuarios:", erro);
         else console.log("Tabela usuarios criada com sucesso!");
