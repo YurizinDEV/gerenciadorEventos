@@ -9,7 +9,6 @@ Este é um projeto de exemplo para gerenciar eventos, usuários e logs em **Type
 - [Estrutura do Projeto](#estrutura-do-projeto)
 - [Como Executar](#como-executar)
 - [Exemplos de Uso](#exemplos-de-uso)
-- [Possíveis Melhorias](#possíveis-melhorias)
 - [Licença](#licença)
 
 
