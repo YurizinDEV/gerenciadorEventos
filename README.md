@@ -1,193 +1,129 @@
 # Sistema de Gerenciamento de Eventos em TypeScript
 
-Este é um projeto de exemplo para gerenciar eventos, usuários e logs em **TypeScript**, utilizando um banco de dados **SQLite** sem expor nenhuma API externa (sem uso de HTTP). Todas as operações podem ser realizadas diretamente por meio das funções disponibilizadas pelo projeto.
-
----
+Este é um projeto de exemplo para gerenciar eventos, usuários e logs em **TypeScript**, utilizando um banco de dados **SQLite** sem expor nenhuma API externa (sem uso de HTTP). A aplicação é estruturada em diferentes camadas, utilizando controllers para validação e manipulação dos dados, um serviço para gestão dos logs e uma camada de banco de dados responsável pela criação das tabelas. Todas as operações podem ser realizadas diretamente por meio das funções disponibilizadas pelo projeto.
 
 ## Sumário
+- [Funcionalidades](#funcionalidades)
+- [Pré-requisitos](#pré-requisitos)
+- [Instalação](#instalação)
+- [Estrutura do Projeto](#estrutura-do-projeto)
+- [Como Executar](#como-executar)
+- [Exemplos de Uso](#exemplos-de-uso)
+- [Possíveis Melhorias](#possíveis-melhorias)
+- [Licença](#licença)
 
-1. [Objetivo](#objetivo)  
-2. [Arquitetura do Projeto](#arquitetura-do-projeto)  
-3. [Requisitos](#requisitos)  
-4. [Instalação e Configuração](#instalação-e-configuração)  
-5. [Estrutura de Pastas](#estrutura-de-pastas)  
-6. [Funcionalidades](#funcionalidades)  
-   - [Interface Evento](#interface-evento)  
-   - [Interface Usuário](#interface-usuário)  
-   - [Tabela de Logs](#tabela-de-logs)  
-7. [Compilação e Execução](#compilação-e-execução)  
-8. [Como Contribuir](#como-contribuir)  
-9. [Licença](#licença)
-
----
-
-## Objetivo
-
-O objetivo é demonstrar operações de inclusão, listagem, busca individual e exclusão nas tabelas de **Eventos** e **Usuários**, além de registrar **Logs** de cada ação executada. Este sistema não expõe nenhuma rota HTTP; todo gerenciamento é feito internamente nas funções do projeto ou via CLI (caso seja configurado).
-
----
-
-## Arquitetura do Projeto
-
-- **Banco de Dados**: **SQLite** (arquivo local).
-- **Linguagem**: **TypeScript** no ambiente Node.js.
-- **Conexão**: Utiliza a biblioteca `sqlite3` (ou similar) para manipular o banco de dados.
-- **Organização**: As funcionalidades são divididas em módulos (pastas) de acordo com a responsabilidade (Eventos, Usuários, Logs).
-
----
-
-## Requisitos
-
-- **Node.js** (versão LTS ou superior).  
-- **npm** ou **yarn** (gerenciador de pacotes).  
-- **TypeScript** instalado globalmente (opcional, mas recomendado).  
-- **SQLite** (para uso do banco de dados local).  
-
-Instale a biblioteca `sqlite3` (ou `better-sqlite3`) para manusear o banco dentro do projeto:
-
-```bash
-npm install sqlite3
-# ou
-yarn add sqlite3
-```
-
----
-
-## Instalação e Configuração
-
-1. **Clone este repositório**  
-   ```bash
-   git clone https://github.com/seu-usuario/seu-repositorio.git
-   cd seu-repositorio
-   ```
-
-2. **Instale as dependências**  
-   ```bash
-   npm install
-   # ou
-   yarn
-   ```
-
-3. **Configure o banco de dados**  
-   - Verifique se existe um arquivo `database.sqlite` na pasta `db` (caso esta seja a estrutura utilizada).  
-   - Se não existir, você pode criar manualmente ou executar um script de inicialização (caso fornecido).
-
----
-
-## Estrutura de Pastas
-
-A estrutura abaixo é apenas uma sugestão; ajuste conforme sua preferência ou necessidade:
-
-```
-└─ src
-   ├─ config
-   │  └─ db.ts               # Configuração e conexão com o SQLite
-   ├─ controllers
-   │  ├─ eventController.ts  # Métodos CRUD de Eventos
-   │  ├─ userController.ts   # Métodos CRUD de Usuários
-   │  └─ logController.ts    # Registro de Logs
-   ├─ models
-   │  ├─ IEvento.ts          # Interface do Evento
-   │  ├─ IUsuario.ts         # Interface do Usuário
-   │  └─ ILog.ts             # Interface do Log
-   ├─ services
-   │  ├─ eventService.ts     # Funções de negócio relacionadas a Eventos
-   │  ├─ userService.ts      # Funções de negócio relacionadas a Usuários
-   │  └─ logService.ts       # Funções de negócio relacionadas a Logs
-   ├─ main.ts                # Arquivo principal de entrada/testes (se for usado CLI)
-   └─ ...
-└─ tsconfig.json
-└─ package.json
-└─ README.md
-```
-
----
 
 ## Funcionalidades
+- **Criação de Tabelas:** Inicializa as tabelas necessárias para armazenar dados de usuários, eventos e logs.
+- **Usuários:**
+  - Inserção de novos usuários (com validação dos dados).
+  - Listagem de todos os usuários cadastrados.
+  - Consulta de usuário específico por ID.
+  - Exclusão de usuário mediante validação.
+- **Eventos:**
+  - Adição de eventos associados a usuários.
+  - Listagem de todos os eventos.
+  - Consulta de evento específico por ID.
+  - Exclusão de evento, verificando relacionamento com o usuário.
+- **Logs:**
+  - Registro e consulta dos logs de operações realizadas no sistema.
 
-### Interface Evento
+## Pré-requisitos
+- Node.js (recomendado: versão 14 ou superior)
+- npm ou yarn para gerenciamento de pacotes
 
-A interface **IEvento** contém:
-- **id**: number ou string (UUID).  
-- **nome**: string.  
-- **data**: string ou Date (dependendo do tipo suportado).  
-- **usuarioCriador**: ID do usuário que criou o evento.
+## Instalação
+1. Clone o repositório:
+   git clone https://github.com/YurizinDEV/gerenciadorEventos.git
 
-**Funções relacionadas**:  
-- `criarEvento(evento: IEvento)`: Cadastra um novo evento.  
-- `listarEventos()`: Lista todos os eventos cadastrados.  
-- `buscarEvento(id: number | string)`: Retorna o evento pelo ID.  
-- `deletarEvento(id: number | string)`: Remove o evento do banco.
+2. Entre no diretório do projeto:
+   cd gerenciadorEventos
 
-### Interface Usuário
+3. Instale as dependências:
+   npm install
+   ou
+   yarn install
 
-A interface **IUsuario** contém:  
-- **id**: number ou string (UUID).  
-- **nome**: string.  
-- **email**: string.  
-- **senha**: string.
+## Estrutura do Projeto
+- **models/**
+  - Contém as definições dos modelos de dados que representam as entidades do sistema, tais como:
+     - Usuário: Define atributos como id, nome, email e senha.
+     - Evento: Define atributos como id, nome, data e a referência ao usuário (usuario_id) responsável pelo evento.
+     - Log: Armazena informações sobre as operações realizadas, facilitando o rastreamento e auditoria do sistema.
+- **database/**
+  - Contém o módulo responsável pela criação das tabelas (ex.: createTable.js), que inicializa as estruturas no banco de dados.
+- **controllers/**
+  - userController.js: Gerencia as operações relacionadas aos usuários, como inserção, listagem, consulta por ID e deleção.
+  - eventController.js: Gerencia as operações relacionadas aos eventos, incluindo adição, listagem, consulta por ID e deleção.
+- **services/**
+  - logService.js: Responsável por listar e gerenciar logs das operações realizadas.
+- **index.js**
+  - Arquivo principal que orquestra a execução das funções, simulando operações do sistema.
 
-**Funções relacionadas**:  
-- `criarUsuario(usuario: IUsuario)`: Cadastra um novo usuário.  
-- `listarUsuarios()`: Lista todos os usuários.  
-- `buscarUsuario(id: number | string)`: Retorna o usuário pelo ID.  
-- `deletarUsuario(id: number | string)`: Remove o usuário do banco.
+## Como Executar
+Este projeto utiliza TypeScript. Para facilitar o desenvolvimento, o script "npm run dev" utiliza o nodemon para monitorar alterações e reiniciar o servidor automaticamente.
 
-### Tabela de Logs
+### Opção 1: Desenvolvimento com nodemon
+Utilize o script de desenvolvimento:
 
-A tabela de logs registra as ações executadas no sistema. Cada log deve conter:  
-- **id**: number ou string (UUID).  
-- **acao**: string (ex.: *INSERT*, *UPDATE*, *DELETE*).  
-- **tabelaAfetada**: string (ex.: *Eventos*, *Usuarios*).  
-- **dataHora**: string ou Date.  
-- **usuarioId**: ID do usuário que executou a ação.
+   npm run dev
 
-**Funções relacionadas**:  
-- `registrarLog( logData: ILog )`: Cria um registro de log a cada ação em **Eventos** ou **Usuários**.  
-- `listarLogs()`: Lista todos os registros de logs.
+Esse comando executará o arquivo index.ts com nodemon e ts-node, permitindo que alterações nos arquivos TypeScript sejam automaticamente refletidas sem a necessidade de reiniciar o servidor manualmente.
 
----
+### Opção 2: Execução Direta com ts-node
+Se preferir, você pode executar diretamente utilizando ts-node:
 
-## Compilação e Execução
+   ts-node index.ts  
+ou  
+   npx ts-node index.ts
 
-Considerando que este projeto não expõe nenhuma API, a **interação** com o sistema pode ser feita por scripts ou entrada de console no arquivo `main.ts` ou equivalente.
+Ao executar, o sistema realizará as seguintes operações:
+1. Cria as tabelas de usuários, eventos e logs.
+2. Insere dois usuários de exemplo.
+3. Lista todos os usuários.
+4. Consulta um usuário específico (por ID).
+5. Exclui um usuário.
+6. Adiciona um evento associado a um usuário específico.
+7. Lista todos os eventos.
+8. Consulta e exclui um evento específico.
+9. Exibe os logs das operações realizadas.
 
-1. **Compilar o projeto**  
-   ```bash
-   npm run build
-   # ou
-   yarn build
-   ```
-   - O TypeScript vai gerar a pasta `dist` com o código JavaScript compilado.
+## Exemplos de Uso
+O código presente no arquivo `index.ts` exemplifica como utilizar cada funcionalidade do sistema. Um resumo das operações realizadas:
 
-2. **Executar via Node**  
-   ```bash
-   node dist/main.js
-   ```
-   - Caso queira usar o `ts-node` diretamente (sem compilar), faça:
-     ```bash
-     npx ts-node src/main.ts
-     ```
-3. **Testar as funcionalidades**  
-   - Dentro de `main.ts`, você pode chamar as funções de criação, listagem, etc. para verificar o funcionamento do sistema.
+```typescript
+// Criação das tabelas
+criarTabelas();
 
----
+// Inserção dos usuários com dados validados pelo controller
+inserirUsuarioController({ nome: "João Silva", email: "joao@example.com", senha: "123456" });
+inserirUsuarioController({ nome: "Maria Silva", email: "maria@example.com", senha: "123456" });
 
-## Como Contribuir
+// Listagem de todos os usuários cadastrados
+listarTodosUsuariosController();
 
-1. Faça um fork do repositório.  
-2. Crie uma branch para sua feature (`git checkout -b minha-feature`).  
-3. Faça commit das suas alterações (`git commit -m 'Minha nova feature'`).  
-4. Faça push para a branch (`git push origin minha-feature`).  
-5. Abra um pull request neste repositório.
+// Consulta de usuário por ID
+listarUsuarioPorIdController(1);
 
----
+// Exclusão de usuário
+deletarUsuarioController(1);
+
+// Adição de evento associado ao usuário
+adicionarEventoController({ nome: "Evento de Teste", data: "2025-03-01", usuario_id: 1 });
+
+// Listagem de todos os eventos cadastrados
+listarTodosEventosController();
+
+// Consulta e exclusão de evento por ID
+listarEventoPorIdController(1);
+deletarEventoController({ id: 1, usuario_id: 1 });
+
+// Listagem dos logs registrados
+listarLogsService();
+```
 
 ## Licença
 
 Este projeto está sob a [MIT License](https://opensource.org/licenses/MIT).  
 Sinta-se à vontade para usar, modificar e compartilhar.
 
-**Prazo de entrega: 10/02/2025**
-
-Bom desenvolvimento!
