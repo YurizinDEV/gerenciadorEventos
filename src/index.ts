@@ -11,7 +11,7 @@ import {
     listarEventoPorIdController,
     deletarEventoController
 } from "./controllers/eventController";
-import { listarLogsController } from "./controllers/logController";
+import { listarLogsService} from "./services/logService";
 
 
 // Cria as tabelas: usuários, eventos e logs
@@ -44,4 +44,4 @@ listarEventoPorIdController(1);
 deletarEventoController({ id: 1, usuario_id: 1 });
 
 
-listarLogsController();
+listarLogsService();
