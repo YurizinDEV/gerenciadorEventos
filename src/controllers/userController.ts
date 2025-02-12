@@ -2,7 +2,7 @@ import { z } from "zod";
 import { inserirUsuarioService, listarTodosUsuariosService, listarUsuarioPorIdService, deletarUsuarioService } from "../services/userService";
 import { Usuario } from "../models/userModel";
 
-// Esquema de validação para usuário
+//Validação para usuário
 const usuarioSchema = z.object({
     nome: z.string().min(1, "O nome é obrigatório"),
     email: z.string().email("Email inválido"),

@@ -2,7 +2,7 @@ import { z } from "zod";
 import { adicionarEventoService, listarTodosEventosService, listarEventoPorIdService, deletarEventoService } from "../services/eventService";
 import { Evento } from "../models/eventModel";
 
-// Schema de validação para um evento, conforme os parâmetros esperados pelo serviço  
+//Validação para um evento, conforme os parâmetros esperados pelo serviço  
 const eventoSchema = z.object({
     nome: z.string().min(1, { message: "O nome do evento é obrigatório" }),
     data: z.string().refine(
@@ -12,7 +12,7 @@ const eventoSchema = z.object({
     usuario_id: z.number().int().positive({ message: "O ID do usuário deve ser um número positivo." })
 });
 
-// Schema para validação do ID dos eventos  
+//Validação do ID dos eventos  
 const idSchema = z.number().int().positive({ message: "O ID deve ser um número positivo." });
 
 export function adicionarEventoController(eventoData: unknown) {
@@ -38,7 +38,6 @@ export function listarEventoPorIdController(idData: unknown) {
 }
 
 export function deletarEventoController(data: unknown) {
-    // Espera-se um objeto contendo "id" e "usuario_id"  
     const schema = z.object({
         id: idSchema,
         usuario_id: z.number().int().positive({ message: "O ID do usuário deve ser um número positivo." })
