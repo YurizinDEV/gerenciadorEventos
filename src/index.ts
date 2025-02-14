@@ -28,7 +28,7 @@ listarTodosUsuariosController();
 listarUsuarioPorIdController(1);
 
 // Deleta um usuário, validando os dados no controller
-deletarUsuarioController(1);
+//deletarUsuarioController(1);
 
 
 // Adiciona um evento com base no usuário inserido
@@ -41,7 +41,7 @@ listarTodosEventosController();
 listarEventoPorIdController(1);
 
 // Deleta o evento, validando os dados no controller
-deletarEventoController({ id: 1, usuario_id: 1 });
+//deletarEventoController({ id: 1, usuario_id: 1 });
 
 
 listarLogsService();
